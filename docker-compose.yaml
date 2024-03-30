@@ -3,22 +3,34 @@ services:
   web:
     build:
       context: ./
+
+    depends_on:
+      - postgres
+      - redis
     ports:
       - '8000:8000'
     environment:
       DEBUG: 'true'
+      DATABASE_URL: 'psql://localhost:5432/todoapp'
+      THP_GOOGLE_OAUTH2_CLIENT_ID: ''
+      THP_GOOGLE_OAUTH2_CLIENT_SECRET: ''
+      THP_GOOGLE_OAUTH2_PROJECT_ID: ''
+      THP_LINKEDIN_CLIENT_ID: ''
+      THP_LINKEDIN_CLIENT_SECRET: ''
 
   postgres:
-    restart: always
-    image: postgres:latest
+    image: postgres:16
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: todoapp
+      POSTGRES_USER: dev
 
   redis:
-    restart: always
-    image: redis:latest
+    image: redis:5
     ports:
       - "6379:6379"
     volumes:

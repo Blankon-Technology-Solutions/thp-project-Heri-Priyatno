@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 import environ
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -21,7 +22,7 @@ DATA_DIR = BASE_DIR.parent / "data"
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, True),
-    DATABASE_URL=(str, f'sqlite:///{BASE_DIR.parent}/db.sqlite3')
+    DATABASE_URL=(str, f'sqlite:///{DATA_DIR}/db.sqlite3')
 )
 
 # Quick-start development settings - unsuitable for production
@@ -35,7 +36,6 @@ DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['localhost', '*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,9 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'django_filters',
     'rest_framework',
     'account',
-    'todo'
+    'todo',
 ]
 AUTH_USER_MODEL = 'account.User'
 
@@ -59,6 +61,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:8000'
 ]
 
 ROOT_URLCONF = 'thp.urls'
@@ -66,7 +72,9 @@ ROOT_URLCONF = 'thp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / "templates"
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,17 +89,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'thp.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db()
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -111,7 +114,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -123,13 +125,18 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
 STATIC_ROOT = DATA_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / "statics",
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = reverse_lazy('todo-home')
+LOGOUT_REDIRECT_URL = reverse_lazy('todo-home')
