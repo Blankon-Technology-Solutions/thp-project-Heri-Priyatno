@@ -32,17 +32,4 @@ class TodoApiView(viewsets.ModelViewSet):
         qs = super().filter_queryset(queryset)
         return qs.filter(user=self.request.user)
 
-    def finalize_response(self, request, response, *args, **kwargs):
-        channel_layer = get_channel_layer()
-        user = self.request.user
-        group_name = f'todo_{user.email}'
-        # Trigger message sent to group
-        # async_to_sync(channel_layer.group_send)(
-        #     group_name, {
-        #         "type": "todo.update",
-        #         "message": "Update"
-        #     }
-        # )
-        return super().finalize_response(request, response, *args, **kwargs)
-
 
