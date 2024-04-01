@@ -20,9 +20,10 @@ from django.contrib import admin
 from django.urls import path, include
 from todo.urls import urlpatterns as todo_url
 
-urlpatterns = todo_url + [
+urlpatterns = (todo_url + [
     path('api/auth/', include('account.urls_api')),
     path('api/', include('todo.urls_api')),
     path('auth/', include('account.urls')),
     path('admin/', admin.site.urls),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+])
+               # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT))

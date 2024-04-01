@@ -1,14 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block content %}
-    Hello
     {% if user.is_authenticated %}
         Hi {{ user.email }}! <a href="{% url 'logout' %}">Log out</a><br/>
-
-    {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'login' %}">Log In</a><br/>
-        <a href="{% url 'oauth-login' 'google' %}">Log In Google</a><br/>
-        <a href="{% url 'oauth-login' 'linkedin' %}">Log In Linkedin</a><br/>
     {% endif %}
+
+
 {% endblock content %}
+{% block javascript %}
+    <script>
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/todo/'
+        );
+    </script>
+{% endblock %}

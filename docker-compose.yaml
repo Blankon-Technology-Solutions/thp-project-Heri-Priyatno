@@ -11,7 +11,7 @@ services:
       - '8000:8000'
     environment:
       DEBUG: 'true'
-      DATABASE_URL: 'psql://localhost:5432/todoapp'
+      DATABASE_URL: 'psql://dev:dev@localhost:5432/todoapp'
       THP_GOOGLE_OAUTH2_CLIENT_ID: ''
       THP_GOOGLE_OAUTH2_CLIENT_SECRET: ''
       THP_GOOGLE_OAUTH2_PROJECT_ID: ''
