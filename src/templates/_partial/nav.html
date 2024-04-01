@@ -10,6 +10,12 @@
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
             </ul>
+            {% if user.is_authenticated %}
+            <div class="col-md-3 text-end text-secondary">
+                Hi {{ user.email  }}
+                <a href="{% url 'logout' %}" class="btn btn-secondary">Log out</a>
+            </div>
+            {% endif %}
         </div>
     </div>
 </nav>

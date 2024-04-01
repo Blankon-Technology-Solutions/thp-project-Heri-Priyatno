@@ -24,6 +24,5 @@ urlpatterns = todo_url + [
     path('api/auth/', include('account.urls_api')),
     path('api/', include('todo.urls_api')),
     path('auth/', include('account.urls')),
-    path("accounts/", include("django.contrib.auth.urls")),
     path('admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

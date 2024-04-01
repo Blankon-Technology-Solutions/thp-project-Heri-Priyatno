@@ -1,4 +1,5 @@
-from django.test import TestCase
+from django.contrib.auth import get_user
+from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -6,6 +7,19 @@ from account.models import User
 
 
 # Create your tests here.
+
+class TestAuthView(TransactionTestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email='email@localhost.com',
+                                             password='r4h451401')
+
+    def test_login(self):
+        with self.subTest('Valid login'):
+            data = dict(password='r4h451401', username='email@localhost.com')
+            url = reverse('login')
+            response = self.client.post(url, data, follow=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(get_user(self.client).is_authenticated)
 
 
 class TestAccountAPI(APITestCase):
