@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        Hi {{ user.email }}! <a href="{% url 'logout' %}">Log out</a><br/>
+    {% endif %}
+    <!-- Add a todo row -->
+    <div class="row">
+        <div class="offset-md-2 col-lg-9">
+            <form method="post" action="{% url 'todo-home' %}" id="todo-form">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="title" placeholder="Do laundry" required>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" name="submit" class="btn btn-outline-primary">
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <hr />
+    <!-- todo list row -->
+    <div class="row">
+        <div class="offset-md-2 col-lg-6">
+            <div class="list-group">
+                {% for todo in todo_list %}
+                    <div class="list-group-item {% if todo.completed %} todo-complete {% endif %}">
+                        {{ todo.title }}
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{#    <div x-data="{ todos: [] }"#}
+{#         x-init="fetch('{% url 'todo-list' %}')#}
+{#              .then(response => response.json())#}
+{#              .then(data => todos = data)"#}
+{#         class="row">#}
+{#        <div class="offset-md-2 col-lg-6">#}
+{#            <div class="list-group">#}
+{#            <template x-for="todo in todos">#}
+{#                <div class="list-group-item {% if todo.completed %} todo-complete {% endif %}"#}
+{#                x-text="todo.title">#}
+{#                </div>#}
+{#            </template>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{% endblock content %}
+{% block javascript %}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/todo/'
+        );
+        chatSocket.onmessage = function (e) {
+            console.log(e.data)
+            location.reload();
+        };
+
+        chatSocket.onclose = function (e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+    </script>
+    <script>
+        const csrfToken = document.querySelector('#todo-form > input').value;
+        const getTodo = async () => {
+            try {
+                const res = axios.get('/api/todos/')
+                res.then(response => {
+                    console.log(response.data)
+                    return response.data
+                })
+            } catch (e) {
+                console.error(e)
+            }
+            return {
+                newTodo: "",
+                todos: [
+                ]
+            }
+        }
+    </script>
+{% endblock %}

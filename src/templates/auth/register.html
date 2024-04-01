@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <main class="form-signin w-100 m-auto">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <h1 class="h3 mb-3 fw-normal">User Registration</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-floating">
+                <input type="email" class="form-control" id="id_username" name="username"
+                       placeholder="name@example.com">
+                <label for="id_username">Email Address</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="id_password" name="password"
+                       placeholder="Password">
+                <label for="id_password">Password</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2">Register</button>
+        </form>
+        <a href="{% url 'login' %}" class="btn btn-default">Login</a><br/>
+        <a href="{% url 'oauth-login' 'google' %}" class="btn btn-default">Log In Google</a><br/>
+        <a href="{% url 'oauth-login' 'linkedin' %}" class="btn btn-default">Log In Linkedin</a><br/>
+    </main>
+{% endblock content %}
